@@ -33,7 +33,7 @@ if prompt := st.chat_input("请输入你的问题..."):
         st.markdown(prompt)
     st.session_state.messages.append({"role": "user", "content": prompt})
 
-       with st.chat_message("assistant"):
+    with st.chat_message("assistant"):
      # 1. 开启流式输出 (stream=True)
      stream = client.chat.completions.create(
          model="deepseek-chat",
