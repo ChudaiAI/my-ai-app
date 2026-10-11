@@ -6,7 +6,7 @@ st.title("🤖 我的第一个AI产品")
 st.caption("基于 DeepSeek 大模型开发")
 
 client = OpenAI(
-    api_key=api_key=st.secrets["DEEPSEEK_API_KEY"],# ⚠️ 替换成真实的 Key
+    api_key=st.secrets["DEEPSEEK_API_KEY"],# ⚠️ 替换成真实的 Key
     base_url="https://api.deepseek.com"
 )
 
