@@ -33,13 +33,22 @@ if prompt := st.chat_input("请输入你的问题..."):
         st.markdown(prompt)
     st.session_state.messages.append({"role": "user", "content": prompt})
 
-    with st.chat_message("assistant"):
-        with st.spinner("思考中..."):
-            response = client.chat.completions.create(
-                model="deepseek-chat",
-                messages=st.session_state.messages
-            )
-            ai_reply = response.choices[0].message.content
-            st.markdown(ai_reply)
-
-    st.session_state.messages.append({"role": "assistant", "content": ai_reply})
+       with st.chat_message("assistant"):
+     # 1. 开启流式输出 (stream=True)
+     stream = client.chat.completions.create(
+         model="deepseek-chat",
+         messages=st.session_state.messages,
+         stream=True
+     )
+     
+     # 2. 定义一个提取器，把流式内容逐个字拿出来
+     def stream_generator():
+         for chunk in stream:
+             if chunk.choices[0].delta.content is not None:
+                 yield chunk.choices[0].delta.content
+     
+     # 3. st.write_stream 会边接收边在网页上渲染，并返回完整文本
+     ai_reply = st.write_stream(stream_generator())
+ 
+ # 4. 流式输出结束后，把完整的回复存入历史记录
+ st.session_state.messages.append({"role": "assistant", "content": ai_reply})
